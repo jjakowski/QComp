@@ -1,0 +1,560 @@
+
+
+#
+S_x = [0,1  ;1  ,0 ] ;   
+S_y = [0,-1i ;1i,0 ] ;   
+S_z = [1,0   ; 0,-1 ] ;   
+S_1 = [1,0   ; 0, 1 ]; 
+Hadd = [1,1  ; 1,-1 ]/sqrt(2) ; 
+
+XX = S_x ;  YY =S_y ;   ZZ =S_z ;  II =  S_1 ; HH =  Hadd ;
+
+creation = 0.5*( XX -1j*YY)  ;  anihilation  =  0.5*(XX +1j*YY ) ; 
+cr =creation         ;  an = anihilation ;   
+
+#CNOT  =    
+#CX    =    
+
+CX = [ 1 0 0 0 ;  0 1 0 0 ; 0 0  0 1  ;  0 0 1 0 ];
+
+#Rx(
+
+function RRx  =  Rx( Theta)  
+     #Pauli matrices:
+      S_y = [0,-1i ;1i,0 ] ;   S_z = [1,0  ;0, -1  ] ;   S_x = [0,1  ; 1 , 0 ] ;  II  = [1,0  ; 0 , 1 ] ;
+      RRx  =  II* cos(Theta/2)  - 1i* sin(Theta/2)*S_x ;  # = expm( -i*theta/2*XX) 
+   
+endfunction 
+
+
+function RRy  =  Ry( Theta)  
+     #Pauli matrices:
+      S_y = [0,-1i ; 1i,0 ] ;   S_z = [1,0  ;0,-1  ] ;   S_x = [0,1  ; 1 , 0 ] ;  II  = [1,0  ; 0 , 1 ] ;
+      RRy  =  II* cos(Theta/2)  - 1i* sin(Theta/2)*S_y ;  # = expm( -i*theta/2*YY) 
+endfunction 
+
+
+function RRz  =  Rz( Theta)  
+     #Pauli matrices:
+      S_y = [0,-1i ; 1i,0 ] ;   S_z = [1,0  ; 0, -1  ] ;   S_x = [0,1  ; 1 , 0 ] ;  II  = [1,0  ; 0 , 1 ] ;
+      RRz  =  II* cos(Theta/2)  - 1i* sin(Theta/2)*S_z ;  # =  expm( -i*theta/2*ZZ) 
+endfunction 
+
+# SWAP  gate  :
+#   CX(1,2,2)*CX(2,1,2)*CX(1,2,2)
+function U = SWAP(i,j,Nbits) 
+        S_y = [0,-1i ; 1i,0 ] ;   S_z = [1,0  ; 0, -1  ] ;   S_x = [0,1  ; 1 , 0 ] ;  II  = [1,0  ; 0 , 1 ] ;
+        U = CX(i,j,Nbits) * CX(j,i,Nbits)* CX(i,j,Nbits) ;
+endfunction 
+
+
+# ASWAP ( see  Fig A1.  in Adv. Quantum Technol. 2021, 4, 2100012)
+function  U=ASWAP(theta, phi, iq0,iq1,Nbits) 
+       S_y = [0,-1i ; 1i,0 ] ;   S_z = [1,0  ; 0, -1  ] ;   S_x = [0,1  ; 1 , 0 ] ;  II  = [1,0  ; 0 , 1 ] ;
+       RR  =Rz(phi +pi) * Ry(theta+ pi/2) ; 
+       RR_adj = RR' ; 
+       U = CX(iq1,iq0,Nbits) *kron(II,RR)* CX(iq0,iq1,Nbits)*kron(II,RR_adj)* CX(iq1,iq0,Nbits) ; 
+endfunction
+
+function  [  theta , U ] =  get_theta(Ham, mylist) 
+  # get a theta for the Unitary matrix that dagonalizes a 2x2 Hamiltonian  given by indices:
+  # U =  [cos(0.5*theta),-sin(0.5*theta)  ;  sin(0.5*theta), cos(0.5*theta) ] 
+  # 
+     k = mylist(1) ;  l = mylist(2) ; 
+
+  #     H11 =  Ham(
+  #  2*H_1q(1,2)/(H_1q(1,1) - H_1q(2,2)) 
+
+   theta =  atan( 2*Ham(k,l)/(Ham(k,k)  - Ham(l,l)) ) ;
+   theta_half = 0.5*theta ;
+   #U = [cos(theta),  -sin(theta);  sin(theta), cos(theta) ]
+   U = eye(size(Ham,1)) ;
+
+   U(k,k)   = cos(theta_half);  U(k,l) =-sin(theta_half); 
+   U(l,k)   = sin(theta_half);  U(l,l) = cos(theta_half); 
+
+endfunction
+
+
+
+
+
+
+function  vv1  =  vv(mylist,N)
+        #size(mylist)
+         mylist
+         size(mylist)
+
+        vv1 =zeros(N,1) ;   vv1(mylist)=1;
+endfunction
+
+
+k0  =  [ 1 0 ]'; 
+k1  =  [ 0 1 ]';
+
+k00  =  [ 1 0 0 0 ]'; 
+k01  =  [ 0 1 0 0 ]';
+k10  =  [ 0 0 1 0 ]';
+k11  =  [ 0 0 0 1 ]';
+
+k000 =  [ 1 0 0 0  0 0 0 0 ]'; 
+k001 =  [ 0 1 0 0  0 0 0 0 ]';
+k010 =  [ 0 0 1 0  0 0 0 0 ]';
+k011 =  [ 0 0 0 1  0 0 0 0 ]';
+k100 =  [ 0 0 0 0  1 0 0 0 ]';
+k101 =  [ 0 0 0 0  0 1 0 0 ]';
+k110 =  [ 0 0 0 0  0 0 1 0 ]';
+k111 =  [ 0 0 0 0  0 0 0 1 ]';
+
+
+
+k0000 =  [ 1 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0 ]'; 
+k0001 =  [ 0 1 0 0  0 0 0 0  0 0 0 0  0 0 0 0 ]'; 
+k0010 =  [ 0 0 1 0  0 0 0 0  0 0 0 0  0 0 0 0 ]';
+k0011 =  [ 0 0 0 1  0 0 0 0  0 0 0 0  0 0 0 0 ]';
+k0100 =  [ 0 0 0 0  1 0 0 0  0 0 0 0  0 0 0 0 ]';
+k0101 =  [ 0 0 0 0  0 1 0 0  0 0 0 0  0 0 0 0 ]';
+k0110 =  [ 0 0 0 0  0 0 1 0  0 0 0 0  0 0 0 0 ]';
+k0111 =  [ 0 0 0 0  0 0 0 1  0 0 0 0  0 0 0 0 ]';
+k1000 =  [ 0 0 0 0  0 0 0 0  1 0 0 0  0 0 0 0 ]';
+k1001 =  [ 0 0 0 0  0 0 0 0  0 1 0 0  0 0 0 0 ]';
+k1010 =  [ 0 0 0 0  0 0 0 0  0 0 1 0  0 0 0 0 ]';
+k1011 =  [ 0 0 0 0  0 0 0 0  0 0 0 1  0 0 0 0 ]';
+k1100 =  [ 0 0 0 0  0 0 0 0  0 0 0 0  1 0 0 0 ]';
+k1101 =  [ 0 0 0 0  0 0 0 0  0 0 0 0  0 1 0 0 ]';
+k1110 =  [ 0 0 0 0  0 0 0 0  0 0 0 0  0 0 1 0 ]';
+k1111 =  [ 0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 1 ]';
+
+ oNN = eye(16,16) ;    oNN(1,:) *= 0  ;
+ oNN([2,3,5,9],:)  *= 1;  
+ oNN([4,6,7,10,11,13],:) *= 2; 
+ oNN([8,12,14,15],:)     *= 3;
+ oNN(16,:)               *= 4
+
+function  out_ket(vv,thrs) 
+   #thrs = 1e-8  ;
+    N=size(vv,1)  ;
+    Nvecs = size(vv,2);
+    ket_1 = {"0" , "1" };
+    ket_2 = {"00", "01", "10", "11"}  ;
+    ket_3 = {"000", "001" ,"010", "011",    "100", "101" ,"110", "111"  } ;
+    ket_4 = {"0000", "0001" ,"0010", "0011", "0100", "0101" ,"0110", "0111", "1000", "1001" ,"1010", "1011",   "1100", "1101" ,"1110", "1111"} ;
+    ket_5 = {"00000", "00001" ,"00010", "00011", "00100", "00101" ,"00110", "00111", "01000", "01001" ,"01010", "01011",   "01100", "01101" ,"01110", "01111", "10000", "10001" ,"10010", "10011", "10100", "10101" ,"10110", "10111", "11000", "11001" ,"11010", "11011",   "11100", "11101" ,"11110", "11111"} ;
+    
+   if      (N==2^1) ; myket= ket_1  ;
+   elseif  (N==2^2) ; myket= ket_2  ;
+   elseif  (N==2^3) ; myket= ket_3  ;
+   elseif  (N==2^4) ; myket= ket_4  ;
+   elseif  (N==2^5) ; myket= ket_5  ;
+   endif
+
+   for  ivec =1: Nvecs 
+      if (Nvecs >1)  printf(" %5d : ", ivec);  endif
+      v =vv (:,ivec);
+      [a,perm] = sort(-abs(v)) ;    # sort from highest  Abs value to lowest  
+      printf("0");
+      count =0;    # count kets printed
+      for i=1:N 
+           ii = perm(i)  ;
+           cc = v(ii)   ;
+           Abs_cc =  abs(cc)  ;
+           Re_cc  =  real(cc) ; 
+           Im_cc  =  imag(cc) ;
+           #if (abs(cc) > thrs && imag(cc)==0 )  printf("     %.4f * |%s>     +",v(ii), myket{ii});  endif
+           #if (abs(cc) > thrs && imag(cc)!=0 )  printf("    ( %.4f+ %.4fj) * |%s>     +",real(v(ii)),imag(v(ii)), myket{ii});  endif
+           if  (abs(cc) > thrs) 
+             printf( "\b ");
+             count ++ ;
+            #if      (Im_cc ==0) ; printf( "   %.4f * |%s>     + "       ,Re_cc, myket{ii}); 
+            #elseif  (Re_cc ==0) ; printf("   %.4fj * |%s>     + "       ,Im_cc, myket{ii});  
+             if      (abs(Im_cc)  < thrs) ; printf( "   %.4f * |%s>     + "       ,Re_cc, myket{ii}); 
+             elseif  (abs(Re_cc)  < thrs) ; printf("   %.4fj * |%s>     + "       ,Im_cc, myket{ii});  
+             else                ; printf("  ( %.4f+ %.4fj) * |%s>    + ",Re_cc,Im_cc, myket{ii})  ; endif 
+           endif 
+      endfor 
+      if (count>0) printf("\b\b") ;endif ; printf(" \n");
+  endfor
+endfunction 
+
+
+function   out(v)
+    thrs=1e-3  ;  
+    out_ket(v,thrs);
+endfunction 
+
+
+
+function  CX =  CX(ic0,ix0,Nbits)
+    N= 2^Nbits; 
+    CX =zeros(N,N)  ;
+    if (ix0==ic0)  CX =0; printf("Error:  ix=ic in CX\n"); return ; endif;  
+
+    # we have bit numbering from the right, but we want from left. So let us translate:  
+    ix =  Nbits + 1 - ix0 ; 
+    ic =  Nbits + 1 - ic0 ;
+    for i=0:N-1
+      dec2bin(i) ;
+       bitc  =  bitget(i,ic) ;
+       bitx  =  bitget(i,ix) ;
+       bitcx =  xor(bitc,bitx) ;  
+       icx   = bitset(i,ix,bitcx) ;
+      #printf(" %5d   %6s  : %5d %5d : xor %5d \n",i+1,dec2bin(i), bitx ,bitx, xor(bitget(i,ic ),  bitget(i,ix )))
+     # printf(" %5d   %6s  : %5d %5d : xor %5d \n",i+1,dec2bin(i), bitx ,bitx, xor(bitc,bitx)) 
+      #printf("JJ:   %d %d :  %6s %6s \n",i, bitset(i,ix,bitcx), dec2bin(i),dec2bin( bitset(i,ix,bitcx) ))
+     CX(i+1, icx+1) =1; 
+    endfor  
+endfunction
+
+#------
+
+function U = HWE(theta_vec) 
+       t  = theta_vec  ;
+       U  =  kron(Rx(t(1)) , Rx(t(2)),  Rx(t(3)) , Rx(t(4) )) ; 
+       U1 =  CX(3,4,4) *  CX(2,3,4)  *  CX(1,2,4) ; 
+       U  = U1*U  ; 
+       U1 =  Rz(t(7 )) * Rx(t(6) ) * Rz(t(5) ) ;
+       U2 =  Rz(t(10)) * Rx(t(9) ) * Rz(t(8) ) ;
+       U3 =  Rz(t(13)) * Rx(t(12)) * Rz(t(11)) ;
+       U4 =  Rz(t(16)) * Rx(t(15)) * Rz(t(14)) ;
+       U  = kron(U1,U2,U3,U4)* U;
+
+endfunction 
+
+
+# from Zach: 
+#X q0\nX q2\nRx(1.5708) q0\nH q1\nH q2\nH q3\nCNOT q0,q1\nCNOT q1,q2\nCNOT q2,q3\nRz(t1) q3\nCNOT q2,q3\nCNOT q1,q2\nCNOT q0,q1\nRx(-1.5708) q0\nH q1\nH q2\nH q3\n
+function   U=ucc(theta)
+        #t  = theta_vec  ;
+        Nbits =4 ;
+        HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+        II  = [1,0 ;0,1];
+        U0 = kron(Rx(pi/2) ,  HH, HH, HH) ; 
+       #U1 = kron(II,II, CX(3,4))  * kron(II,CX(2,3), II) * kron(CX(1,2),II,II)  ;
+        U1 = CX(3,4,Nbits)  * CX(2,3,Nbits)  * CX(1,2,Nbits)   ;
+        U  =  kron(II,II,II,Rz(theta(1)))*  U1 * U0 ;  
+       #U0 =  kron(CX(1,2),II,II) * kron(II,CX(2,3), II) *  kron(II,II, CX(3,4))  ; 
+        U0 = CX(1,2,Nbits)  * CX(2,3,Nbits)  * CX(3,4,Nbits)   ;
+        U1 =  kron(Rx(-pi/2),HH,HH,HH) ; 
+        U   =  U1*U0*U ;      
+# X q0 
+# X q2
+# Rx(1.5708) q0
+# H q1
+# H q2
+# H q3
+# CNOT q0,q1
+# CNOT q1,q2
+# CNOT q2,q3
+# Rz(t1) q3
+# CNOT q2,q3
+# CNOT q1,q2
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+# H q2
+# H q3
+  
+endfunction
+
+
+function   U=ucc2(theta)
+ #  Rx(pi/2) q0
+ #  H q1
+ #  CNOT q0, q1 
+ #--
+        #t  = theta_vec  ;
+        Nbits =2 ;
+        HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+        II  = [1,0 ;0,1];
+        U0 = kron(Rx(pi/2), HH ) ; 
+        #U1 = CX(3,4,Nbits)  * CX(2,3,Nbits)  * CX(1,2,Nbits)   ;
+        U1 =                                   CX(1,2,Nbits)   ;
+        U  =  kron(II,Rz(theta))*  U1 * U0 ;  
+       #U0 =  kron(CX(1,2),II,II) * kron(II,CX(2,3), II) *  kron(II,II, CX(3,4))  ; 
+        U0 = CX(1,2,Nbits)                                     ;
+        U1 =  kron(Rx(-pi/2),HH) ; 
+        U   =  U1*U0*U ;      
+endfunction
+
+
+
+
+
+#--- init:
+# X q0 
+# X q2
+#-------- UCCD
+# Rx(1.5708) q0
+# H q1
+# H q2
+# H q3
+# CNOT q0,q1
+# CNOT q1,q2
+# CNOT q2,q3
+# Rz(t1) q3
+# CNOT q2,q3
+# CNOT q1,q2
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+# H q2
+# H q3
+#----  UCCS on [q0, q1]
+# Rx(1.5708) q0
+# H q1
+# CNOT q0,q1
+# Rz(t2) q1
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+#----  UCCS on [q2, q3]
+# Rx(1.5708) q2
+# H q3
+# CNOT q2,q3
+# Rz(t3) q3
+# CNOT q2,q3
+# Rx(-1.5708) q2
+# H q3
+#------------------
+
+
+function  U= ujj(theta)
+        Nbits =4 ;
+        HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+        II  = [1,0 ;0,1];
+        theta1 =  theta(1);  theta2 =  theta(2);  theta3 =  theta(3);  
+
+#----  UCCS on [q0, q1]
+# Rx(1.5708) q0
+# H q1
+# CNOT q0,q1
+# Rz(t2) q1
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+     #  Nbits2 =2 ;
+     #  U0 = kron(Rx(pi/2), HH ) ; 
+     #  U1 =                                   CX(1,2,Nbits2)   ;
+     #  U  =  kron(II,Rz(theta2))*  U1 * U0 ;  
+     #  U0 = CX(1,2,Nbits2)                                     ;
+     #  U1 =  kron(Rx(-pi/2),HH) ; 
+     #  U  =  U1*U0*U ;      
+     #  U_q1q2    =  U  ;      
+#----  UCCS on [q2, q3]
+# Rx(1.5708) q2
+# H q3
+# CNOT q2,q3
+# Rz(t3) q3
+# CNOT q2,q3
+# Rx(-1.5708) q2
+# H q3
+     #  Nbits2 =2 ;
+     #  U0 = kron(Rx(pi/2), HH ) ; 
+     #  U1 =                                   CX(1,2,Nbits2)   ;
+     #  U  =  kron(II,Rz(theta3))*  U1 * U0 ;  
+     #  U0 = CX(1,2,Nbits2)                                     ;
+     #  U1 =  kron(Rx(-pi/2),HH) ; 
+     #  U   =  U1*U0*U ;      
+     #  U_q3q4 = U ;
+
+#--- ver2:
+
+        U0 =  kron(Rx(pi/2), HH, Rx(pi/2), HH  ) ;
+        U1 =  CX(1,2,Nbits) *   CX(3,4,Nbits)     ; 
+        U  =   kron(II,Rz(theta2),II,Rz(theta3))  * U1* U0  ;
+        U0 = CX(1,2,Nbits) * CX(3,4,Nbits)  ;
+        U1 =  kron(Rx(-pi/2),HH, Rx(-pi/2),HH) ; 
+        U  =   U1*U0*U ; 
+        U_2q = U ;   
+        
+
+#-------- UCCD
+# Rx(1.5708) q0
+# H q1
+# H q2
+# H q3
+# CNOT q0,q1
+# CNOT q1,q2
+# CNOT q2,q3
+# Rz(t1) q3
+# CNOT q2,q3
+# CNOT q1,q2
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+# H q2
+# H q3
+        U0 = kron(Rx(pi/2) ,  HH, HH, HH) ; 
+        U1 = CX(3,4,Nbits)  * CX(2,3,Nbits)  * CX(1,2,Nbits)   ;
+        U  =  kron(II,II,II,Rz(theta1))*  U1 * U0 ;  
+        U0 = CX(1,2,Nbits)  * CX(2,3,Nbits)  * CX(3,4,Nbits)   ;
+        U1 =  kron(Rx(-pi/2),HH,HH,HH) ; 
+        U  =  U1*U0*U ;      
+       # U  =  U*kron(U_q1q2,U_q3q4);
+        U = U*  U_2q  ;         
+
+endfunction
+
+
+function  U= ujj2(theta)
+        Nbits =4 ;
+        HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+        II  = [1,0 ;0,1];
+        theta1 =  theta(1);  theta2 =  theta(2);  theta3 =  theta(3);  
+
+#----  UCCS on [q0, q1]
+# Rx(1.5708) q0
+# H q1
+# CNOT q0,q1
+# Rz(t2) q1
+## CNOT q0,q1
+## Rx(-1.5708) q0
+## H q1
+#----  UCCS on [q2, q3]
+# Rx(1.5708) q2
+# H q3
+# CNOT q2,q3
+# Rz(t3) q3
+# CNOT q2,q3
+# Rx(-1.5708) q2
+## H q3
+#--- ver2:
+        U0 =  kron(Rx(pi/2), HH, Rx(pi/2), HH  ) ;
+        U1 =  CX(1,2,Nbits) *   CX(3,4,Nbits)     ; 
+        U  =   kron(II,Rz(theta2),II,Rz(theta3))  * U1* U0  ;
+
+        #U0 = CX(1,2,Nbits) * CX(3,4,Nbits)  ;
+        U0 =  CX(3,4,Nbits)  ;
+        #U1 = kron(Rx(-pi/2),HH, Rx(-pi/2),HH) ; 
+        U1 =  kron(II,II,  Rx(-pi/2),II) ;
+        U  =   U1*U0*U ; 
+        U_2q = U ;   
+        
+
+#-------- UCCD
+## Rx(1.5708) q0
+## H q1
+# H q2
+## H q3
+## CNOT q0,q1
+# CNOT q1,q2
+# CNOT q2,q3
+# Rz(t1) q3
+# CNOT q2,q3
+# CNOT q1,q2
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+# H q2
+# H q3
+        #U0 = kron(Rx(pi/2) ,  HH, HH, HH) ; 
+        U0 = kron(II, II,  HH, II)  ;
+        #U1 = CX(3,4,Nbits)  * CX(2,3,Nbits)  * CX(1,2,Nbits)   ;
+        U1 = CX(3,4,Nbits)  * CX(2,3,Nbits)  ; 
+        U  =  kron(II,II,II,Rz(theta1))*  U1 * U0 ;  
+        U0 = CX(1,2,Nbits)  * CX(2,3,Nbits)  * CX(3,4,Nbits)   ;
+        U1 =  kron(Rx(-pi/2),HH,HH,HH) ; 
+        U  =  U1*U0*U ;      
+       # U  =  U*kron(U_q1q2,U_q3q4);
+        U = U*  U_2q  ;         
+
+endfunction
+
+
+function  U= ujj_bad(theta)
+        Nbits =4 ;
+        HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+        II  = [1,0 ;0,1];
+        U0 = kron(Rx(pi/2) ,  HH, HH, HH) ; 
+        U1 = CX(3,4,Nbits)  * CX(2,3,Nbits)  * CX(1,2,Nbits)   ;
+        U  =  kron(II,II,II,Rz(theta(1)))*  U1 * U0 ;  
+	
+        #U0 = CX(1,2,Nbits)  * CX(2,3,Nbits)  * CX(3,4,Nbits)   ;
+        U0 =                  CX(2,3,Nbits)  * CX(3,4,Nbits)   ;
+
+        U1 =      kron(II,Rz(theta(2)), HH,HH)  ;
+       # U  = CX(1,2,Nbits) * U1*U0*U            ; 
+
+        U  =                 U1*U0*U            ; 
+        U  = CX(1,2,Nbits) * U            ; 
+        
+        U0 =  kron(Rx(-pi/2),HH, Rx(pi/2),II)   ;
+        U1 =  CX(3,4,Nbits)                     ;
+        U  =  CX(3,4,Nbits)*kron(II,II,II,Rz(theta(3)))   *U1*U0 *U    ; 
+        U  =   kron(II,II,Rx(-pi/2),HH)  * U                           ;
+     #  U1 =  kron(Rx(-pi/2),HH,HH,HH) ; 
+     #  U   =  U1*U0*U ;      
+endfunction
+
+#  U=  ucc(pi*0.0)  *  kron(ucc2(theta_1), ucc2(itheta_2))  #*k1010
+
+#------  
+#  minimizer:
+# see here :  http://www.ieap.uni-kiel.de/lehre/vorlesungen/matlab/fit/fminsearch.pdf
+# and here : https://stefan.angrick.me/finding-local-extrema-in-matlab-and-octave-via-fminbnd
+#
+# example 1;   a=0.0; jj2  = @(x) cos(x(1))*sin(a*x(2));    [xval, fval]=  fminsearch(jj2,[0,0])
+# example 2: function f = myfun(x,a) ; 
+#                     f = x(1)^2 + a*x(2)^2;
+#            endfunction 
+#            a=1.5 ;  x = fminsearch(@(x) myfun(x,a),[0,1])
+
+# bra_H_ket  =  @(ket)   (ucc*ket)'*Ham*ket ;
+
+#function  en =  bra_H_ket(ket0,  U, Ham) ;  
+#          ket =U*ket0 ;
+#          en =   ket' * Ham*  ket ;  
+#endfunction   
+#
+#
+#   fminsearch (@(theta)     ucc(theta)*ket *Ham*  ket*ucc(theta) , [0,0]
+
+
+#####   RbH  system
+# E_HF  =  k1010'*Ham*k1010
+#       = -2908.116854610000
+#
+# E_FCI (RbH)  = -2908.125111742295  ;
+#      |Psi_0> =    0.9877 * |1010>     +    -0.1218 * |0101>     +    0.0695 * |1001>     +    0.0695 * |0110>     
+
+#[th, ff] =  fminsearch (@(th)     real((ucc(th)*k1010)'  *Ham*  ucc(th)*k1010)  , theta)
+#         :   tt =    1.895810546875000e-01,  
+#             ff = -2908.123223382969 
+#           |Psi0 > =   0.9955 * |1010>     +    -0.0946 * |0101>     
+
+#[th, ff] =  fminsearch (@(th)     real((kron(ucc2(th(1)), ucc2(th(2)))   *k1010)'  *Ham*    kron(ucc2(th(1)), ucc2(th(2)))*k1010)  , [2,2] )  
+#         : th = [ 5.728347840127697e-07   1.348427315092428e-05a ] 
+#           ff = -2908.116854609989
+#           |Psi0> =     1.0000 * |1010>       
+
+#--  reaches FCI:        
+#[th, ff] =  fminsearch (@(th)     real((ucc(th(1))*kron(ucc2(th(2)), ucc2(th(3)))   *k1010)'  *Ham*   ucc(th(1))* kron(ucc2(th(2)), ucc2(th(3)))*k1010)  , [1,2,2] )
+#         :  tt = [ 3.396378496268792   2.985677000662547   3.261962646028214 ]
+#            ff = -2908.125111738876
+#           out(UU*k1010) =  ( 0.9877+ 0.0000j) * |1010>    +    -0.1218 * |0101>     +    0.0695 * |0110>     +   ( 0.0694+ 0.0000j) * |1001>      
+#
+
+
+
+
+
+#---
+#X q0 
+#\nX q2
+#\nRx(1.5708) q0
+#\nH q1
+#\nH q2
+#\nH q3
+#\nCNOT q0,q1
+#\nCNOT q1,q2
+#\nCNOT q2,q3
+#\nRz(3.14159) q3
+#\nCNOT q2,q3
+#\nCNOT q1,q2
+#\nCNOT q0,q1
+#\nRx(-1.5708) q0
+#\nH q1
+#\nH q2
+#\nH q3
+
+

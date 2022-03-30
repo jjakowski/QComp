@@ -1,0 +1,40 @@
+
+#
+source ~/AnacondaProjects/octave-Rots.inp 
+source  octave-Pauli_expansion.inp 
+source octave-VQE.inp
+
+
+#--
+# 4 qubits, 2-electrons:   4-states
+
+source octave-Ham.inp   # read in 2-electron matrix  (6x6 size)
+
+#---------------
+# H(1+0, 1+0) =      -160.0609313332457        ;    # |11,00>   :  - triplet
+# H(1+1, 1+1) =      -160.29928470142366       ;    # |10,10>   :  - singlet            :   2 -> |00>
+# H(1+2, 1+2) =      -160.01599811862673       ;    # |10,01>   :  - singlet + triplet  :   3 -> |01>  
+# H(1+3, 1+3) =      -160.01599811862673       ;    # |01,10>   :  - singlet + triplet  :   4 -> |10>  
+# H(1+4, 1+4) =      -159.2227975789532        ;    # |01,01>   :  - sinlet             :   5 -> |11>
+# H(1+5, 1+5) =      -160.0609313332457        ;    # |00,11>   :  - reiplet 
+
+perm = [2,3,4,5]   
+
+
+
+ H_2q = H(perm,perm)       # remove trivial triplet and ainglet states
+
+eig(H_2q) 
+
+en=[]; theta =  linspace(-180,180,361); theta*180/pi,  for ith=1:size(theta,2);   vec= ucc_2q_1p(pi/180*theta(ith))*k00 ; out(vec) ;  en = [en, vec'*H_2q*vec];  endfor  
+plot(theta,en) 
+
+
+
+thrs = 1e-10 
+ [Cizxy,  Pauli_vec]=  Pauli_expansion(H,thrs ) ;
+
+
+
+
+

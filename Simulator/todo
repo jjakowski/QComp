@@ -1,0 +1,21 @@
+
+
+
+1)  extend 2q circuit to 3quibits
+2)  See is we can  find circuit  by  considering  exp(H) for  1q, 2q, 3q  etc
+3) hypothesis :     for   the matrix  size N we need  (N-1) parameters. 
+   Fo  example:  for   1q, dim(H)=2, hence 1 parameter needed, for 2q, dim(H2)= 4,  hence 3 parameters needed, 
+    for  3q, dim(H)=8, hence 7 parameters needed.
+
+   
+
+
+exp(a*I + b*X + c*Y + ) )
+
+4) lieg07.pdf :
+ p. 65, eq. C1: 
+  Exp(A) =  lim_{m->infty}   (I +1/m* A)^m
+
+I + iH/m) 
+
+Exp ( -i*Hdt)  =  I -i*H*dt =  I -i*(a*I+ b*X +c*Y + d*Z)*dt  = -i/dt* [ (a +i)*I + b*X +c*Y +d*Z) ]    
