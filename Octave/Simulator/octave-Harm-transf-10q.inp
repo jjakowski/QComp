@@ -1,0 +1,252 @@
+
+source octave-Rots.inp
+ 
+#
+#  
+#
+function  [ qvec, Nq ] =  dec2ixyz ( ii) 
+    #  maps  integer number into  Pauli matrices   {I,Z, X,Y} ->  {0,1,2,3}
+    #     
+    offs0 = "0"              ;
+    qq   =   dec2base(ii,4)  ; 
+    Nq   =   size(qq,2)      ;      
+    qvec =   zeros(1,Nq)     ;
+    for iq = 1:Nq 
+        qvec(iq) =dec2base(ii,4)(Nq-iq+1) - offs0 ;     # least significant first   and most significant is last
+    endfor 
+ endfunction 
+
+#######################################################################################
+
+
+function [Cizxy,  Pauli_vec]=  Pauli_expansion2(H,thrs )
+   # thrs :   threshold   for sparse 
+   #
+   XX  = [0,1   ; 1, 0 ] ;   
+   YY  = [0,-1i ;1i, 0 ] ;   
+   ZZ  = [1,0   ; 0,-1 ] ;   
+   II  = [1,0   ; 0, 1 ] ;  
+
+   IZXY =zeros(2,2,4) ; IZXY(:,:,1) = II ;   IZXY(:,:,2) = ZZ ;IZXY(:,:,3) = XX ;   IZXY(:,:,4) = YY ;
+
+   #IZXY=  sparse(IZXY) ;
+
+   Nb = size(H,1) ; 
+   Nq =  ceil(log2(Nb))  ;
+   N = 2^Nq ; 
+   NN   = N*N ; 
+   Htmp = sparse(eye(N)) ; 
+   Htmp(1:Nb,1:Nb) =  H ;
+   
+
+   Cizxy     =   zeros(NN,1)  ;
+   Pauli_vec =   zeros(NN,Nq) ; 
+
+   dt1 =0 ;  dt2 =0; 
+   for i=0:NN-1  #1024
+        t0 = time() ; 
+        [ Pauli_string , Nq0 ] =  dec2ixyz ( i)   ;
+         
+    #   StringOp  = 1   ; 
+    #   for iq =1:Nq    ; # N0q 
+    #      if iq  <=  Nq0 
+    #          id_IZXY  = Pauli_string(iq)   ; 
+    #          qIZXY =  IZXY(:,:,id_IZXY+1)  ; 
+    #      else 
+    #          qIZXY =  II ; 
+    #      endif
+    #      StringOp =sparse(kron( sparse(qIZXY)  ,StringOp)) ; 
+    #   endfor
+
+        pvec         = zeros(1,Nq) ;  
+        pvec(1:Nq0)  = Pauli_string   ;
+        StringOp = sparse(kron(IZXY(:,:,pvec(1)+1),
+                               IZXY(:,:,pvec(2)+1),
+                               IZXY(:,:,pvec(3)+1),
+                               IZXY(:,:,pvec(4)+1),
+                               IZXY(:,:,pvec(5)+1),
+                               IZXY(:,:,pvec(6)+1),
+                               IZXY(:,:,pvec(7)+1))) ;
+
+    
+        t1 = time() ; 
+
+        # tmp =  trace(H*StringOp)  
+        Cizxy(i+1)           = trace(Htmp*StringOp)/N ;
+        Pauli_vec(i+1,1:Nq0) =  Pauli_string ; 
+        t2 = time() ; 
+        dt1 += t1-t0 ;
+        dt2 += t2-t1 ;
+   endfor    
+
+   t2 =  time() ;
+   NPauli_terms  =0 ; 
+   for i =1:NN 
+      if  (abs(Cizxy(i)) >  thrs  )
+         printf("\n C= %14.7e  ", Cizxy(i))
+         printf("%c.","IZXY"(Pauli_vec(i,:)+1))
+         NPauli_terms  +=1 ;
+      endif
+   endfor 
+   printf("\n")
+
+   [aa,perm] =sort(abs(Cizxy),"descend");  Cizxy = Cizxy(perm) ;  Pauli_vec = Pauli_vec(perm,:) ;
+   Cizxy = Cizxy(1:NPauli_terms) ;
+   Pauli_vec = Pauli_vec(1:NPauli_terms,:);
+   t3 = time() ; 
+   dt3 =  t3-t2;
+   printf(" times:   %f   %f   %f \n", dt1,dt2,dt3) ;
+endfunction 
+
+#######################################################################################
+
+#######################################################################################
+
+
+function [Cizxy,  Pauli_vec]=  Pauli_expansion(H,thrs )
+   # thrs :   threshold   for sparse 
+   #
+   XX  = [0,1   ; 1, 0 ] ;   
+   YY  = [0,-1i ;1i, 0 ] ;   
+   ZZ  = [1,0   ; 0,-1 ] ;   
+   II  = [1,0   ; 0, 1 ] ;  
+
+   IZXY =zeros(2,2,4) ; IZXY(:,:,1) = II ;   IZXY(:,:,2) = ZZ ;IZXY(:,:,3) = XX ;   IZXY(:,:,4) = YY ;
+
+
+  #Nb = size(H,1) ; 
+  #Nq =  ceil(log2(Nb))  ;
+  #N = 2^Nq ; 
+  #NN   = N*N ; 
+  #Htmp = eye(N) ; 
+
+   Nb = size(H,1) ; 
+   Nq =  ceil(log2(Nb))  ;
+   N = 2^Nq ; 
+   NN   = N*N ; 
+   Htmp = sparse(eye(N)) ; 
+   Htmp(1:Nb,1:Nb) =  H ;
+   
+
+   Cizxy     =   zeros(NN,1)  ;
+   Pauli_vec =   zeros(NN,Nq) ; 
+
+   for i=0:NN-1  #1024
+        [ Pauli_string , Nq0 ] =  dec2ixyz ( i)   ;
+         
+        StringOp  = 1   ; 
+        for iq =1:Nq    ; # N0q 
+           if iq  <=  Nq0 
+               id_IZXY  = Pauli_string(iq)   ; 
+               qIZXY =  IZXY(:,:,id_IZXY+1)  ; 
+           else 
+               qIZXY =  II ; 
+           endif
+           StringOp =kron( qIZXY  ,StringOp) ; 
+        endfor
+    
+        # tmp =  trace(H*StringOp)  
+        Cizxy(i+1)           = trace(Htmp*StringOp)/N ;
+        Pauli_vec(i+1,1:Nq0) =  Pauli_string ; 
+   endfor    
+
+   NPauli_terms  =0 ; 
+   for i =1:NN 
+      if  (abs(Cizxy(i)) >  thrs  )
+         printf("\n C= %14.7e  ", Cizxy(i))
+         printf("%c.","IZXY"(Pauli_vec(i,:)+1))
+         NPauli_terms  +=1 ;
+      endif
+   endfor 
+   printf("\n")
+
+   [aa,perm] =sort(abs(Cizxy),"descend");  Cizxy = Cizxy(perm) ;  Pauli_vec = Pauli_vec(perm,:) ;
+   Cizxy = Cizxy(1:NPauli_terms) ;
+   Pauli_vec = Pauli_vec(1:NPauli_terms,:);
+   
+endfunction 
+
+#######################################################################################
+function print_Pauli(Cizxy, Pauli_vec) 
+   Nterms =  size(Cizxy) ; 
+   for i=1:Nterms
+         printf("\n C= %14.7e  ", Cizxy(i))
+         printf("%c.","IZXY"(Pauli_vec(i,:)+1))
+   endfor 
+   printf("\n");
+endfunction
+
+#######################################################################################
+#####
+#-- check it
+
+#######################################################################################
+
+#
+#   Harmonic oscillator discretized  in real space:
+#
+  Nq =  7  ;    # nunber of quibits 
+  #N =  2^Nq  ;
+  N =  2^Nq -1 ;
+  k =1; 
+  x=linspace(-5,5,N);  
+  dx =x(2)-x(1) ; 
+  d0=2*eye(N) ; d1=-eye(N-1); T=d0; T(1:N-1,2:N) +=d1;T(2:N,1:N-1)+= d1; T/=(dx**2); V=k*x.**2;  
+  H = T +diag(V) ; [ch,eh]= eig(H) ;  plot(diag(eh),"o")
+
+
+
+#
+#
+#
+#
+# IXYZ =zeros(2,2,4) ; IXYZ(:,:,1) = II ;   IXYZ(:,:,2) = XX ;IXYZ(:,:,3) = YY ;   IXYZ(:,:,4) = ZZ 
+ IZXY =zeros(2,2,4) ; IZXY(:,:,1) = II ;   IZXY(:,:,2) = ZZ ;IZXY(:,:,3) = XX ;   IZXY(:,:,4) = YY  ;
+
+
+
+
+
+#######
+#thrs =1e-8 ;
+#NPauli_terms  =0 ; 
+#for i =1:NN 
+#      if  (abs(Cizxy(i)) >  thrs  )
+#         printf("\n C= %14.7e  ", Cizxy(i))
+#         printf("%c.","IZXY"(Pauli_vec(i,:)+1))
+#         NPauli_terms  +=1 ;
+#      endif
+#endfor 
+#printf("\n")
+
+#####
+#-- check it
+#[aa,perm] =sort(abs(Cizxy),"descend");  Cizxy = Cizxy(perm) ;  Pauli_vec = Pauli_vec(perm,:) ;
+
+
+thrs =1e-10;
+
+[Cizxy,  Pauli_vec]=  Pauli_expansion(H,thrs ) ;
+
+NPauli_terms =  size(Cizxy);
+
+#Htmp =   zeros(N,N) ;
+Htmp =   zeros(2^Nq,2^Nq) ;
+for i=1:NPauli_terms
+   Pauli_term  = 1; 
+   for iq =1:Nq 
+     ixyz = Pauli_vec(i,iq)+1; 
+     Pauli_term  = kron(IZXY(:,:,ixyz), Pauli_term ); 
+   endfor
+   Htmp +=  Cizxy(i)*Pauli_term  ;
+         
+endfor 
+
+printf("  Check  the difference between H and its Pauli expansion: %12.6e \n", norm(H-Htmp(1:N,1:N)));
+
+
+# sc=10 ; plot (x,V,"-", x, cc(:,1)*sc+ee(1), x,ee(1), x,cc(:,2)*sc+ee(2),x,ee(2),      x,cc(:,9)*sc+ee(9),x,ee(9) , x,cc(:,10)*sc+ee(10),x,ee(10) ,   x,cc(:,11)*sc+ee(11),x,ee(11)   )
+
+ sc=5 ; plot (x,V,"-r", x, cc(:,1)*sc+ee(1),'-b', x,ee(1), x,cc(:,2)*sc+ee(2),'-b',x,ee(2),      x,cc(:,3)*sc+ee(3),'-b',x,ee(3) , x,cc(:,4)*sc+ee(4),'-b',x,ee(4) ,   x,cc(:,5)*sc+ee(5),'-b',x,ee(5), x,cc(:,6)*sc+ee(6),'-b',x,ee(6)    )
+ ylim([0,12])   
+

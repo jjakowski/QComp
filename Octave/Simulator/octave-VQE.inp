@@ -1,0 +1,332 @@
+#
+#   list of ansatzes
+#    1-qubits,   UCCD ansatz
+# 1) 2-qubits, 1-electron, 1-parameter :  ucc_1_2q , init state:  |10>
+# 2) 4-qubits, 2-electrons, 1-parameter :  ucc_1_4q , init state:  |1010>
+#      theory: UCCD
+# 3) 4-qubits, 2-electrons, 1-parameter(x2) :ucc_1d_4q : init state |1010>
+#      theory: UCCD
+# 4) 4-qubits: 2-electrons, 3-parameter, : ucc_3_4q  : init state  |1010> 
+# 5) 6-qubits, 2-electrons  
+# 6) 8-qubits, 4-electrons
+#--
+#  equibvalence:
+#     th=pi/5  , out(HH*Rz(th)*HH*k0) ,  out(Rx(th)*k0)
+#--------------------
+
+#---------------
+# 1-qubit, 1-parameter 
+#-----
+#  Rx(pi/2)  q0
+#  Rz(theta) q0
+#  Rx(-pi/2) q0
+#----
+#function  U =ucc_1q_1p(theta) 
+function  U= ug_1q(theta)
+   U =ubf_1q(theta) 
+endfunction
+function  U =ubf_1q(theta) 
+   Nbits =1 ;
+   HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+   II = eye(2)  ;
+   U =  Rx(-pi/2)*Rz(theta)*Rx(pi/2)  ;
+endfunction 
+
+
+#--------
+#   2 -qubits -1parameter
+#----------
+#--- init:
+# X q0 
+#----  UCC  on [q0, q1]
+# Rx(1.5708) q0
+# H q1
+# CNOT q0,q1
+# Rz(t2) q1
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+#---------
+
+
+
+#function  U = ucc_2q_1p(theta)
+function  U = ucc_2q_1p(theta)
+   U =  ubf_2q(theta)  ;
+endfunction 
+
+#------
+function  U = ubf_2q(theta)
+   Nbits =2 ;
+   HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+   #HH = Hadd                    ;   # Haddamard
+   II = eye(2) ;
+   U0 = kron(Rx(pi/2),HH);
+   U1 =  CX(1,2,Nbits)   ; 
+   U  = kron(II,Rz(theta))*  U1 * U0 ;    
+   U0 =  CX(1,2,Nbits)  ;
+    U1 =  kron(Rx(-pi/2),HH) ;  
+   #U1 =  kron(Rx( pi/2),HH) ;  
+   #U1 =eye(4) ;
+   U  =  U1*U0*U  ;
+endfunction 
+
+#------
+#   2-qubits, 3 parameters
+# ------ 
+function U =ucc_2q_3p(theta)
+         U =ug_2q(theta)
+endfunction 
+function U =ug_2q(theta)
+   Nbits =2 ;
+   HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+   #HH = Hadd                    ;   # Haddamard
+   II = eye(2) ;
+
+   
+   U0 =  Rx(-pi/2)*Rz(theta(1))*Rx(pi/2) ;
+   U1 =  Rx(-pi/2)*Rz(theta(2))*Rx(pi/2) ;
+   U  = kron(U0,U1) ;
+   
+   U= ucc_2q_1p(theta(3)) *U ;
+endfunction
+
+#---
+# 3-qubits,
+#
+#----  UCC  on [q0, q1]
+# Rx(1.5708) q0
+# H q1
+# H q2
+# CNOT q0,q1
+# CNOT q1,q2
+# Rz(theta)  q2
+# CNOT q1,q2
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+# H q2
+#---------
+function  U = ubf_3q(theta)
+   Nbits =3 
+   HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+   II = eye(2) ;
+
+   U0 = kron(  Rx(pi/2),  HH, HH)      ; 
+   U1 =  CX(2,3,Nbits) * CX(1,2,Nbits) ;  
+   U2 = kron(II,II,Rz(theta))          ;
+   U3 = CX(1,2,Nbits) * CX(2,3,Nbits)  ;    
+   U4 = kron( Rx(-pi/2), HH, HH)       ;  
+
+   U = U4*U3*U2*U1*U0 ;
+endfunction  
+
+#---
+# 4-qubits,
+#
+#----  UCC  on [q0, q1]
+# Rx(1.5708) q0
+# H q1
+# H q2
+# H q3
+# CNOT q0,q1
+# CNOT q1,q2
+# CNOT q2,q3
+# Rz(theta)  q3
+# CNOT q2,q3
+# CNOT q1,q2
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+# H q2
+# H q3
+#---------
+
+function  U = ubf_4q(theta)
+   Nbits =4 ;
+   HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+   II = eye(2) ;
+
+   U0 = kron(  Rx(pi/2), HH, HH, HH)                  ; 
+   U1 = CX(3,4,Nbits) * CX(2,3,Nbits) * CX(1,2,Nbits) ;  
+   U2 = kron(II,II,II,Rz(theta))                      ;
+   U3 = CX(1,2,Nbits) * CX(2,3,Nbits) * CX(3,4,Nbits) ;    
+   U4 = kron( Rx(-pi/2), HH, HH, HH)                  ;  
+
+   U = U4*U3*U2*U1*U0 ;
+endfunction  
+
+#------------------
+# 4 qubits
+#--- UCC-3_q4   #
+
+#--- init:
+# X q0 
+# X q2
+#----  UCCS on [q0, q1]
+# Rx(1.5708) q0
+# H q1
+# CNOT q0,q1
+# Rz(t2) q1
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+#----  UCCS on [q2, q3]
+# Rx(1.5708) q2
+# H q3
+# CNOT q2,q3
+# Rz(t3) q3
+# CNOT q2,q3
+# Rx(-1.5708) q2
+# H q3
+#-------- UCCD
+# Rx(1.5708) q0
+# H q1
+# H q2
+# H q3
+# CNOT q0,q1
+# CNOT q1,q2
+# CNOT q2,q3
+# Rz(t1) q3
+# CNOT q2,q3
+# CNOT q1,q2
+# CNOT q0,q1
+# Rx(-1.5708) q0
+# H q1
+# H q2
+# H q3
+#------------------
+
+
+function U = ug_4q(theta)
+   Nbits =4 ;
+   HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+   II = eye(2)  ;
+
+   Nth = size(theta) ;
+
+   th_1 = theta(1) ; 
+   th_2 = theta(2) ; 
+   th_3 = theta(3) ; 
+   th_4 = theta(4) ; 
+
+   th_5 = theta(5);
+   th_6 = theta(6);
+   th_7 = theta(7);
+ 
+   ubf1 = ubf_1q(th_1) ; 
+   ubf2 = ubf_1q(th_2) ; 
+   ubf3 = ubf_1q(th_3) ; 
+   ubf4 = ubf_1q(th_4) ; 
+
+   U0 = kron(ubf1,ubf2,ubf3,ubf4)  ;
+   U1 = kron(ubf_2q(th_5),ubf_2q(th_6)) ;
+   U2 = ubf_4q(th_7) ;
+
+   U = U2*U1*U0 ; 
+
+endfunction
+#####################################################################
+#
+#  playground:
+#
+#------------------
+function  U = ug2_2q(theta)
+   Nbits =2 ;
+   HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+   II = eye(2) ;
+
+   th_1 = theta(1) ; 
+   th_2 = theta(2) ; 
+   th_3 = theta(3) ; 
+
+   ubf1 = ubf_1q(th_1) ; 
+   ubf2 = ubf_1q(th_2) ; 
+
+   U0 = kron(ubf1,ubf2) ; 
+   U1 = ubf_2q(th_3) ;
+
+   U  =  U1*U0  ;
+endfunction 
+
+#---------------------
+
+
+function U = ug_4q_v2(theta)
+   Nbits =4 ;
+   HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+   II = eye(2)  ;
+
+   Nth = size(theta) ;
+
+   th_1 = theta(1) ; 
+   th_2 = theta(2) ; 
+   th_3 = theta(3) ; 
+   th_4 = theta(4) ; 
+
+   th_5 = theta(5);
+   th_6 = theta(6);
+
+   th_7 = theta(7);
+
+   th_8  = theta(8);
+   th_9  = theta(9);
+
+   th_10 = theta(10);
+   th_11 = theta(11) ; 
+   th_12 = theta(12) ; 
+   th_13 = theta(13) ; 
+
+#   th_14 = theta(14) ; 
+
+
+ 
+   ubf1 = ubf_1q(th_1) ; 
+   ubf2 = ubf_1q(th_2) ; 
+   ubf3 = ubf_1q(th_3) ; 
+   ubf4 = ubf_1q(th_4) ; 
+
+   U0 = kron(ubf1,ubf2,ubf3,ubf4)  ;
+   U1 = kron(ubf_2q(th_5),ubf_2q(th_6)) ;
+   U2 = ubf_4q(th_7) ;
+
+   U3 = kron(ubf_2q(th_8),ubf_2q(th_9)) ;
+
+   ubf10 = ubf_1q(th_10) ; 
+   ubf11 = ubf_1q(th_11) ; 
+   ubf12 = ubf_1q(th_12) ; 
+   ubf13 = ubf_1q(th_13) ; 
+
+   U4 = kron(ubf10,ubf11,ubf1,ubf13)  ;
+
+   U = U4*U3*U2*U1*U0 ; 
+
+endfunction
+#------
+
+function    u_3q(theta)
+   Nbits =3 ;
+   HH = [1,1  ; 1,-1 ]/sqrt(2) ;   # Haddamard
+   II = eye(2)  ;
+
+   Nth = size(theta) ;
+
+   th_1 = theta(1) ; 
+   th_2 = theta(2) ; 
+   th_3 = theta(3) ; 
+
+   U0 = kron(ubf1,ubf2,ubf3)  ;
+   U1 = kron(
+
+   th_4 = theta(4) ; 
+
+   th_5 = theta(5);
+   th_6 = theta(6);
+
+   th_7 = theta(7);
+
+   th_8  = theta(8);
+   th_9  = theta(9);
+
+
+endfunction 
