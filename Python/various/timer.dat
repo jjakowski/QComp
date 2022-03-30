@@ -1,0 +1,39 @@
+
+Host: mackaroo
+
+Timers On : Mon Sep 23 22:59:46 2019
+Timers Off: Mon Sep 23 23:06:27 2019
+
+Wall Time:      401.00 seconds
+
+Total PK formation time:       0.08u       0.00s   0.050673w      4 calls
+HF: Form H  :       0.00u       0.03s   0.009377w      4 calls
+HF: Form S/X:       0.00u       0.00s   0.001601w      4 calls
+HF: Guess   :       0.23u       0.00s   0.134885w      4 calls
+SAD Guess   :       0.22u       0.00s   0.125721w      4 calls
+JK: (A|mn)  :       0.00u       0.00s   0.000149w      4 calls
+JK: (A|Q)^-1/2:       0.10u       0.00s   0.048558w      4 calls
+JK: (Q|mn)  :       0.00u       0.00s   0.000014w      4 calls
+JK: D       :       0.00u       0.00s   0.000941w     20 calls
+JK: USO2AO  :       0.00u       0.00s   0.000115w     20 calls
+JK: JK      :       0.00u       0.00s   0.000544w     20 calls
+JK: J       :       0.00u       0.00s   0.000143w      8 calls
+JK: J1      :       0.00u       0.00s   0.000031w     16 calls
+JK: J2      :       0.00u       0.00s   0.000035w     16 calls
+JK: K       :       0.00u       0.00s   0.000086w      8 calls
+JK: K1      :       0.00u       0.00s   0.000020w      8 calls
+JK: K2      :       0.00u       0.00s   0.000017w      8 calls
+JK: AO2USO  :       0.00u       0.00s   0.000037w     20 calls
+DIISManager::add_entry:       0.00u       0.00s   0.002398w     16 calls
+DIISManager::extrapolate:       0.00u       0.00s   0.000429w     12 calls
+DIISManager::extrapolate: bMatrix setup:       0.00u       0.00s   0.000074w     12 calls
+DIISManager::extrapolate: bMatrix pseudoinverse:       0.00u       0.00s   0.000134w     12 calls
+DIISManager::extrapolate: form new data:       0.00u       0.00s   0.000104w     12 calls
+HF: Form G  :       0.00u       0.00s   0.001365w     12 calls
+PK computes JK:       0.00u       0.00s   0.000145w     12 calls
+HF: Form F  :       0.00u       0.00s   0.000031w     12 calls
+HF: DIIS    :       0.00u       0.00s   0.002773w     12 calls
+HF: Form C  :       0.00u       0.00s   0.000225w     12 calls
+HF: Form D  :       0.00u       0.00s   0.000065w     12 calls
+
+***********************************************************

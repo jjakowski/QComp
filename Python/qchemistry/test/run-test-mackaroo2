@@ -1,0 +1,21 @@
+
+#conda activate psi4  
+#/qchemistry/test/Users/j2c/Dropbox-ORNL/Python-codes
+
+
+
+#export  PYTHONPATH=/home/j2c/Dropbox-ORNL/Python-codes 
+#testenv=psi4
+
+
+
+export  PYTHONPATH=/Users/j2c/Dropbox-ORNL/Python-codes
+testdir=~/Dropbox-ORNL/Python-codes/qchemistry/test
+testpy=ex2.py
+
+testenv=OpenFermion-py36
+
+
+cd  ${testdir}
+#conda  run  -n psi4  python ${testpy} 
+conda  run  -n ${testenv}  python ${testpy} 

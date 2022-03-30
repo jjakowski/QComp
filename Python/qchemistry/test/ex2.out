@@ -1,0 +1,321 @@
+
+*** tstart() called on mackaroo
+*** at Mon Jun 22 22:32:41 2020
+
+   => Loading Basis Set <=
+
+    Name: STO-3G-JACEK
+    Role: ORBITAL
+    Keyword: BASIS
+    atoms 1 entry LI         line    31 file /Users/j2c/anaconda/envs/OpenFermion-py36/share/psi4/basis/sto-3g-jacek.gbs 
+    atoms 2 entry H          line    19 file /Users/j2c/anaconda/envs/OpenFermion-py36/share/psi4/basis/sto-3g-jacek.gbs 
+
+
+         ---------------------------------------------------------
+                                   SCF
+               by Justin Turney, Rob Parrish, Andy Simmonett
+                          and Daniel G. A. Smith
+                              RHF Reference
+                        1 Threads,    500 MiB Core
+         ---------------------------------------------------------
+
+  ==> Geometry <==
+
+    Molecular point group: c1
+    Full point group: C_inf_v
+
+    Geometry (in Angstrom), charge = 0, multiplicity = 1:
+
+       Center              X                  Y                   Z               Mass       
+    ------------   -----------------  -----------------  -----------------  -----------------
+         LI           0.000000000000     0.000000000000    -0.200769971526     7.016003436600
+         H            0.000000000000     0.000000000000     1.397666028474     1.007825032230
+
+  Running in c1 symmetry.
+
+  Rotational constants: A = ************  B =      7.48708  C =      7.48708 [cm^-1]
+  Rotational constants: A = ************  B = 224457.12541  C = 224457.12541 [MHz]
+  Nuclear repulsion =    0.993178101600565
+
+  Charge       = 0
+  Multiplicity = 1
+  Electrons    = 4
+  Nalpha       = 2
+  Nbeta        = 2
+
+  ==> Algorithm <==
+
+  SCF Algorithm Type is PK.
+  DIIS enabled.
+  MOM disabled.
+  Fractional occupation disabled.
+  Guess Type is SAD.
+  Energy threshold   = 1.00e-08
+  Density threshold  = 1.00e-08
+  Integral threshold = 0.00e+00
+
+  ==> Primary Basis <==
+
+  Basis Set: STO-3G-JACEK
+    Blend: STO-3G-JACEK
+    Number of shells: 4
+    Number of basis function: 6
+    Number of Cartesian functions: 6
+    Spherical Harmonics?: true
+    Max angular momentum: 1
+
+  ==> Pre-Iterations <==
+
+   -------------------------------------------------------
+    Irrep   Nso     Nmo     Nalpha   Nbeta   Ndocc  Nsocc
+   -------------------------------------------------------
+     A          6       6       0       0       0       0
+   -------------------------------------------------------
+    Total       6       6       2       2       2       0
+   -------------------------------------------------------
+
+  ==> Integral Setup <==
+
+  Using in-core PK algorithm.
+   Calculation information:
+      Number of atoms:                   2
+      Number of AO shells:               4
+      Number of primitives:             12
+      Number of atomic orbitals:         6
+      Number of basis functions:         6
+
+      Integral cutoff                 1.00e-12
+      Number of threads:                 1
+
+  Performing in-core PK
+  Using 462 doubles for integral storage.
+  We computed 55 shell quartets total.
+  Whereas there are 55 unique shell quartets.
+
+  ==> DiskJK: Disk-Based J/K Matrices <==
+
+    J tasked:                  Yes
+    K tasked:                  Yes
+    wK tasked:                  No
+    Memory [MiB]:              375
+    Schwarz Cutoff:          1E-12
+
+    OpenMP threads:              1
+
+  Minimum eigenvalue in the overlap matrix is 3.4640004491E-01.
+  Using Symmetric Orthogonalization.
+
+  SCF Guess: Superposition of Atomic Densities via on-the-fly atomic UHF.
+
+  ==> Iterations <==
+
+                        Total Energy        Delta E     RMS |[F,P]|
+
+   @RHF iter SAD:    -7.45035274689609   -7.45035e+00   0.00000e+00 
+   @RHF iter   1:    -7.84371747733060   -3.93365e-01   1.87415e-02 DIIS
+   @RHF iter   2:    -7.86152097880589   -1.78035e-02   1.81597e-03 DIIS
+   @RHF iter   3:    -7.86184680064093   -3.25822e-04   5.80630e-04 DIIS
+   @RHF iter   4:    -7.86191511469857   -6.83141e-05   4.55115e-05 DIIS
+   @RHF iter   5:    -7.86191539954782   -2.84849e-07   1.93329e-06 DIIS
+   @RHF iter   6:    -7.86191539998329   -4.35469e-10   3.09073e-08 DIIS
+   @RHF iter   7:    -7.86191539998333   -3.73035e-14   2.24965e-09 DIIS
+  Energy and wave function converged.
+
+
+  ==> Post-Iterations <==
+
+    Orbital Energies [Eh]
+    ---------------------
+
+    Doubly Occupied:                                                      
+
+       1A     -2.348726     2A     -0.285404  
+
+    Virtual:                                                              
+
+       3A      0.078231     4A      0.163941     5A      0.163941  
+       6A      0.548145  
+
+    Final Occupation by Irrep:
+              A 
+    DOCC [     2 ]
+
+  @RHF Final Energy:    -7.86191539998333
+
+   => Energetics <=
+
+    Nuclear Repulsion Energy =              0.9931781016005647
+    One-Electron Energy =                 -12.4419278487445677
+    Two-Electron Energy =                   3.5868343471606767
+    Total Energy =                         -7.8619153999833262
+
+Computation Completed
+
+
+Properties will be evaluated at   0.000000,   0.000000,   0.000000 [a0]
+
+Properties computed using the SCF density matrix
+
+  Nuclear Dipole Moment: [e a0]
+     X:     0.0000      Y:     0.0000      Z:     1.5030
+
+  Electronic Dipole Moment: [e a0]
+     X:     0.0000      Y:    -0.0000      Z:    -3.4144
+
+  Dipole Moment: [e a0]
+     X:     0.0000      Y:    -0.0000      Z:    -1.9114     Total:     1.9114
+
+  Dipole Moment: [D]
+     X:     0.0000      Y:    -0.0000      Z:    -4.8584     Total:     4.8584
+
+
+*** tstop() called on mackaroo at Mon Jun 22 22:32:41 2020
+Module time:
+	user time   =       0.30 seconds =       0.00 minutes
+	system time =       0.02 seconds =       0.00 minutes
+	total time  =          0 seconds =       0.00 minutes
+Total time:
+	user time   =       0.30 seconds =       0.00 minutes
+	system time =       0.02 seconds =       0.00 minutes
+	total time  =          0 seconds =       0.00 minutes
+/Users/j2c/Dropbox (ORNL)/Python-codes/qchemistry/test
+/Users/j2c/Dropbox-ORNL/Python-codes
+/Users/j2c/anaconda/envs/OpenFermion-py36/lib/python36.zip
+/Users/j2c/anaconda/envs/OpenFermion-py36/lib/python3.6
+/Users/j2c/anaconda/envs/OpenFermion-py36/lib/python3.6/lib-dynload
+/Users/j2c/.local/lib/python3.6/site-packages
+/Users/j2c/anaconda/envs/OpenFermion-py36/lib/python3.6/site-packages
+/Users/j2c/anaconda/envs/OpenFermion-py36/lib/python3.6/site-packages/Sphinx-1.5.6-py3.6.egg
+/Users/j2c/anaconda/envs/OpenFermion-py36/lib/python3.6/site-packages/xacc
+E(SCF): -7.861915399983326 <psi4.core.RHF object at 0x12b9032b0>
+
+Alpha orbital energies:  [-2.34872563 -0.28540394  0.07823051  0.16394053  0.16394053  0.54814472]
+Beta  orbital energies:  [-2.34872563 -0.28540394  0.07823051  0.16394053  0.16394053  0.54814472]
+
+N-alpha-electrons:  2 
+N-beta--electrons:  2 
+
+Alpha occupations:  [1. 1. 0. 0. 0. 0.]
+Beta  occupations:  [1. 1. 0. 0. 0. 0.]
+
+Nuclear repulsion: 0.9931781016005647
+Help on function get_FCI_hamiltonian in module qchemistry.qcpy:
+
+get_FCI_hamiltonian(MSO_occ, MSO_frozen_list, MSO_active_list, Hamiltonian_0body, Hamiltonian_1body, gmo)
+    input:  MSO_occ, MSO_frozen_list, MSO_active_list, 
+           Hamiltonian_0body, Hamiltonian_1body, gmo
+           where gmo(p,q,r,s) =  <p,q||r,s>     
+    output: FCI_list, fci_ham_sparse
+
+==================================================================================
+     12-qubits: Full Hamiltonian,  no-frozen core, all  vritual MSO included
+Occupied MSO:  [0, 1, 6, 7]
+Frozen   MSO:  []
+Active   MSO:  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+E_HF           =  -7.861915399983326
+E_FCI          =  -7.8823494040135165
+E_FCI_corr     =  -0.020434004030190245
+FCI_list (basis) length             :  495
+#of non-zeros in sparse hamiltonian :  11431
+  
+MP2 correlation energy:  -0.012891706020428788
+MP2 total energy:        -7.874807106003755
+==================================================================================
+     10-qubits: Full Hamiltonian, 2-frozen core MSO, 8 (all)  vritual  MSO 
+Occupied MSO:  [0, 1, 6, 7]
+Frozen   MSO:  [0, 6]
+Active   MSO:  [1, 2, 3, 4, 5, 7, 8, 9, 10, 11]
+E_HF           =  -7.861915399983326
+E_FCI          =  -7.882121735916801
+E_FCI_corr     =  -0.02020633593347476
+FCI_list (basis) length             :  45
+#of non-zeros in sparse hamiltonian :  253
+MP2 correlation energy:  -0.012663562998970403
+MP2 total energy:        -7.874578962982296
+  
+ Now use reduced  (frozen core) 2nd-quantization Hamiltonian 
+ 
+Occupied MSO (fc):  [0, 5]
+Frozen   MSO (fc):  []
+Active   MSO (fc):  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+E_HF            =  -7.861915399983326
+E_FCI      (fc) =  -7.882121735916803
+E_FCI_corr (fc) =  -0.020206335933476538
+FCI_list (basis) length             :  45
+#of non-zeros in sparse hamiltonian :  253
+  
+==================================================================================
+   6-qubits: 8 total MSO, 2-frozen  MSO, 2-occupied active, 4- vritual active MSO  
+Occupied MSO:  [0, 1, 6, 7]
+Frozen   MSO:  [0, 6]
+Active   MSO:  [1, 2, 5, 7, 8, 11]
+E_HF           =  -7.861915399983326
+E_FCI          =  -7.881095658328087
+E_FCI_corr     =  -0.019180258344761114
+FCI_list (basis) length             :  15
+#of non-zeros in sparse hamiltonian :  99
+MP2 correlation energy:  -0.011441731370944293
+MP2 total energy:        -7.873357131354271
+  
+ Now use reduced  (frozen core) 2nd-quantization Hamiltonian 
+ 
+Occupied MSO (fc):  [0, 3]
+Frozen   MSO (fc):  []
+Active   MSO (fc):  [0, 1, 2, 3, 4, 5]
+E_HF            =  -7.861915399983326
+E_FCI      (fc) =  -7.881095658328088
+E_FCI_corr (fc) =  -0.019180258344761114
+FCI_list (basis) length             :  15
+#of non-zeros in sparse hamiltonian :  99
+  
+==================================================================================
+   4-qubits: 6 total MSO, 2-frozen  MSO, 2-occupied active, 2-vritual active MSO  
+Occupied MSO:  [0, 1, 6, 7]
+Frozen   MSO:  [0, 6]
+Active   MSO:  [1, 5, 7, 11]
+E_HF           =  -7.861915399983326
+E_FCI          =  -7.876469456831681
+E_FCI_corr     =  -0.014554056848354868
+FCI_list (basis) length             :  6
+#of non-zeros in sparse hamiltonian :  18
+MP2 correlation energy:  -0.009209754584310385
+MP2 total energy:        -7.871125154567636
+  
+ Now use reduced  (frozen core) 2nd-quantization Hamiltonian 
+ 
+Occupied MSO (fc):  [0, 2]
+Frozen   MSO (fc):  []
+Active   MSO (fc):  [0, 1, 2, 3]
+E_HF            =  -7.861915399983326
+E_FCI      (fc) =  -7.876469456831681
+E_FCI_corr (fc) =  -0.014554056848354868
+FCI_list (basis) length             :  6
+#of non-zeros in sparse hamiltonian :  18
+  
+==========================================================================
+   MP2 energy test   
+
+
+Test if reduced Hamiltonian gives the same MP2 energy as full Hamiltonian
+Full space info:
+MSO_occ  : [1, 7]
+MSO_virt : [5, 11]
+
+SCF energy:                   -7.861915399983326
+MP2 correlation energy (1) :  -0.009209754584310385
+MP2 total energy:      (1) :  -7.871125154567636
+
+MP2 correlation energy (2) :  -0.009209754584310385
+MP2 total energy:      (2) :  -7.871125154567636
+
+
+
+
+
+    SUMMARY:  
+
+No of quibits/active MSO        :  [12. 10.  6.  4.]
+FCI energies, full       2nd Ham:  [-7.8823494  -7.88212174 -7.88109566 -7.87646946]
+FCI energies, fc reduced 2nd Ham:  [-7.8823494  -7.88212174 -7.88109566 -7.87646946]
+REFERENCE                       :  [-7.8823494  -7.88212174 -7.88109566 -7.87646946]
+
