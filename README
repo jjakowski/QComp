@@ -1,4 +1,4 @@
-Quantum computing related stuff
+Quantum computing  & quantum  chemisyty related stuff
 1)  python:  uses psi4numpy and OpenFermion 
 2)  octave:  device simulator, Pauli expansion, VQE circuits
-
+           
